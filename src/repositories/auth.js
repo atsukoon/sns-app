@@ -11,4 +11,22 @@ export const authRepository = {
 
     return { ...data.user, useName: data.user.user_metadata.name };
   },
+
+  async signin(email, password) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error != null) throw new Error(error.message);
+
+    return { ...data.user, useName: data.user.user_metadata.name };
+  },
+
+  async getCurrentUser() {
+    const { data, error } = await supabase.auth.getSession();
+    if (error != null) throw new Error(error.message);
+    if (data.session == null) return;
+
+    return { ...data.session.user, useName: data.session.user.user_metadata.name };
+  }
 };
