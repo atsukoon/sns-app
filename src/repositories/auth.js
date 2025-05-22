@@ -9,7 +9,7 @@ export const authRepository = {
     });
     if (error != null) throw new Error(error.message);
 
-    return { ...data.user, useName: data.user.user_metadata.name };
+    return { ...data.user, userName: data.user.user_metadata.name };
   },
 
   async signin(email, password) {
@@ -19,7 +19,7 @@ export const authRepository = {
     });
     if (error != null) throw new Error(error.message);
 
-    return { ...data.user, useName: data.user.user_metadata.name };
+    return { ...data.user, userName: data.user.user_metadata.name };
   },
 
   async getCurrentUser() {
@@ -27,6 +27,6 @@ export const authRepository = {
     if (error != null) throw new Error(error.message);
     if (data.session == null) return;
 
-    return { ...data.session.user, useName: data.session.user.user_metadata.name };
+    return { ...data.session.user, userName: data.session.user.user_metadata.name };
   }
 };
