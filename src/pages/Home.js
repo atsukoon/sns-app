@@ -1,19 +1,34 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { SessionContext } from '../SessionProvider';
 import { Navigate } from 'react-router-dom';
 import { SideMenu } from '../components/SideMenu';
+import { Post } from '../components/Post';
 import { postRespository } from '../repositories/post';
 
 function Home() {
   const [content, setContent] = useState('');
+  const [posts, setPosts] = useState([]);
   const { currentUser } = useContext(SessionContext);
-  if (currentUser == null) return <Navigate replace to="/signin" />;
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   const createPost = async () => {
     const post = await postRespository.create(content, currentUser.id);
-    console.log(post);
+    setPosts([
+      { ...post, userId: currentUser.id, userName: currentUser.userName },
+      ...posts,
+    ]);
     setContent('');
   };
+
+  const fetchPosts = async () => {
+    const posts = await postRespository.find();
+    setPosts(posts);
+  };
+
+  if (currentUser == null) return <Navigate replace to="/signin" />;
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -41,7 +56,11 @@ function Home() {
                 Post
               </button>
             </div>
-            <div className="mt-4"></div>
+            <div className="mt-4">
+              {posts.map((post) => {
+                return <Post key={post.id} post={post} />;
+              })}
+            </div>
           </div>
           <SideMenu />
         </div>
